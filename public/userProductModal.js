@@ -16,8 +16,8 @@ export default{
         hide_Model(){
             this.userProductModal.hide();
         },
-        add_cart(id, qty){
-            this.$emit('add_cart', id, qty);
+        add_cart(id, qty, flg){
+            this.$emit('add_cart', id, qty, flg);
         }
     },
     mounted(){
