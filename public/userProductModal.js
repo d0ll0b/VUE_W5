@@ -17,6 +17,7 @@ export default{
             this.userProductModal.hide();
         },
         add_cart(id, qty, flg){
+            this.qty=1;
             this.$emit('add_cart', id, qty, flg);
         }
     },

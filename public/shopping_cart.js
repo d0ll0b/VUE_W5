@@ -142,7 +142,6 @@ const app = Vue.createApp({
             })
         },
         onSubmit(){
-
             const api = `${api_url}/api/${api_path}/order`;
             this.isloading=true;
 
