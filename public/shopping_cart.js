@@ -1,4 +1,4 @@
-import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+// import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 import userProductModal from './userProductModal.js';
 
 // 定義 VeeValidate規則(全部載入)
@@ -17,17 +17,17 @@ VeeValidate.configure({
 //   validateOnInput: true, // 調整為：輸入文字時，就立即進行驗證
 });
 
-VeeValidate.defineRule('minMax', (value, [min, max]) => {
+VeeValidate.defineRule('minMaxLength', (value, [min, max]) => {
     // The field is empty so it should pass
     if (!value || !value.length) {
       return true;
     }
-    const numericValue = Number(value);
-    if (numericValue < min) {
-      return `This field must be greater than ${min}`;
+    const length = value.length;
+    if (length < min) {
+      return `字數必須大於 ${min}`;
     }
-    if (numericValue > max) {
-      return `This field must be less than ${max}`;
+    if (length > max) {
+      return `字數必須小於 ${max}`;
     }
     return true;
 });
@@ -35,7 +35,7 @@ VeeValidate.defineRule('minMax', (value, [min, max]) => {
 const api_url = "https://ec-course-api.hexschool.io/v2";
 const api_path = "dollob_api";
 
-const app = createApp({
+const app = Vue.createApp({
     data(){
         return{ 
             products: [],
@@ -58,14 +58,11 @@ const app = createApp({
     methods:{
         // 取得所有商品
         get_products(){
-            this.islaoding=true;
             const api = `${api_url}/api/${api_path}/products`;
             axios.get(api).then((res) => {
                 const { products } = res.data;
                 this.products = products;
-                this.isloading=false;
             }).catch((err) => {
-                this.isloading=false;
                 alert(err.data.message);
             })
         },
@@ -79,7 +76,6 @@ const app = createApp({
                 this.$refs.userProductModal.show_Model();
                 this.isloading=false;
             }).catch((err) => {
-                this.isloading=false;
                 alert(err.data.message);
             })
         },
@@ -107,7 +103,6 @@ const app = createApp({
                 this.isloading=false;
                 alert(message);
             }).catch((err) => {
-                this.isloading=false;
                 alert(err.data.message);
             })
             this.$refs.userProductModal.hide_Model();
@@ -148,6 +143,18 @@ const app = createApp({
         },
         onSubmit(){
 
+            const api = `${api_url}/api/${api_path}/order`;
+            this.isloading=true;
+
+            axios.post(api, { data:this.form }).then((res) => {
+                this.get_cart();
+                this.$refs.form.resetForm();
+                this.form.message = '';
+                this.isloading=false;
+                alert('訂單已成交，謝謝~~');
+            }).catch((err) => {
+                alert(err.data.message);
+            })
         }
     },
     mounted(){
