@@ -16,10 +16,23 @@
   <body>
     <div id="app">
       <div class="container">
+        <h2>Shopping Basket</h2>
         <div class="mt-4">
           <!-- 產品Modal -->
           <user-product-modal ref="userProductModal" :product="product" @add_cart="add_cart"></user-product-modal>
           <!-- 產品Modal -->
+
+          <div ref="toast" class="toast ms-auto fixed-top" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <!-- <img src="..." class="rounded me-2" alt="..."> -->
+              <strong class="me-auto">alert</strong>
+              <small class="text-muted">11 mins ago</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              Hello, world! This is a toast message.
+            </div>
+          </div>
          
           <table class="table align-middle">
             <thead>
@@ -60,7 +73,7 @@
           </table>
           <!-- 購物車列表 -->
           <div class="text-end">
-            <button class="btn btn-outline-danger" type="button" @click="delete_cart()">清空購物車</button>
+            <button class="btn btn-outline-danger" type="button" v-if="carts.length" @click="delete_cart()">清空購物車</button>
           </div>
           <table class="table align-middle">
             <thead>
@@ -90,7 +103,7 @@
                     <div class="input-group input-group-sm">
                       <div class="input-group mb-3">
                         <input 
-                             min="1" type="number" class="form-control" v-model="item.qty" :disabled="isloading" @blur="add_cart(item.id,item.qty,'update')">
+                             min="1" type="number" class="form-control" v-model.number="item.qty" :disabled="isloading" @blur="add_cart(item.id,item.qty,'update')">
                         <span class="input-group-text" id="basic-addon2">{{ item.product.unit }}</span>
                       </div>
                     </div>
@@ -149,7 +162,7 @@
               <v-field
                 id="tel"
                 name="tel"
-                type="text"
+                type="tel"
                 class="form-control"
                 :class="{ 'is-invalid': errors['tel'] }"
                 placeholder="請輸入電話" rules="required|minMaxLength:8,10"
@@ -211,7 +224,7 @@
           <div>
             <div class="input-group">
               <input type="number" class="form-control"
-                    min="1" v-model="qty">
+                    min="1" v-model.number="qty">
               <button type="button" class="btn btn-primary" @click="add_cart(product.id, qty, 'new')">加入購物車</button>
             </div>
           </div>

@@ -74,9 +74,10 @@ const app = Vue.createApp({
                 const { product } = res.data;
                 this.product = product;
                 this.$refs.userProductModal.show_Model();
-                this.isloading=false;
             }).catch((err) => {
                 alert(err.data.message);
+            }).finally(()=>{
+                this.isloading=false;
             })
         },
         add_cart(id, qty=1, flg){
@@ -100,14 +101,16 @@ const app = Vue.createApp({
 
             axios[http](api, { data: cart }).then((res) => {
                 this.get_cart();
-                this.isloading=false;
                 alert(message);
             }).catch((err) => {
                 alert(err.data.message);
+            }).finally(()=>{
+                this.isloading=false;
+                this.$refs.userProductModal.hide_Model();
             })
-            this.$refs.userProductModal.hide_Model();
         },
         get_cart(){
+            this.islaoding=true;
             const api = `${api_url}/api/${api_path}/cart`;
 
             axios.get(api).then((res) => {
@@ -117,29 +120,36 @@ const app = Vue.createApp({
                 this.final_total = final_total;
             }).catch((err) => {
                 alert(err.data.message);
+            }).finally(()=>{
+                this.isloading=false;
             })
         },
         delete_cart(id=null){
             let api = '';
             let message = '';
+            let result = '';
             this.islaoding=true;
 
             if(id===null){
+                result = confirm("是否清空購物車？")
                 api = `${api_url}/api/${api_path}/carts`;
                 message = '購物車已清空 ಥ_ಥ';
             }else{
+                result = confirm("是否刪除品項？")
                 api = `${api_url}/api/${api_path}/cart/${id}`;
                 message = '已從購物車刪除 ಥ_ಥ';
             }
-
-            axios.delete(api).then((res) => {
-                this.get_cart();
-                this.isloading=false;
-                alert(message);
-            }).catch((err) => {
-                this.isloading=false;
-                alert(err.data.message);
-            })
+            
+            if(result){
+                axios.delete(api).then((res) => {
+                    this.get_cart();
+                    alert(message);
+                }).catch((err) => {
+                    alert(err.data.message);
+                }).finally(()=>{
+                    this.isloading=false;
+                })
+            }
         },
         onSubmit(){
             const api = `${api_url}/api/${api_path}/order`;
@@ -149,16 +159,20 @@ const app = Vue.createApp({
                 this.get_cart();
                 this.$refs.form.resetForm();
                 this.form.message = '';
-                this.isloading=false;
                 alert('訂單已成交，謝謝~~');
             }).catch((err) => {
                 alert(err.data.message);
+            }).finally(()=>{
+                this.isloading=false;
             })
         }
     },
     mounted(){
         this.get_products();
         this.get_cart();
+
+        var toast = new bootstrap.Toast(this.$refs.toast)
+        toast.show()
     },
 });
 
