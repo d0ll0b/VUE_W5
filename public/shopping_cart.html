@@ -22,17 +22,9 @@
           <user-product-modal ref="userProductModal" :product="product" @add_cart="add_cart"></user-product-modal>
           <!-- 產品Modal -->
 
-          <div ref="toast" class="toast ms-auto fixed-top" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-              <!-- <img src="..." class="rounded me-2" alt="..."> -->
-              <strong class="me-auto">alert</strong>
-              <small class="text-muted">11 mins ago</small>
-              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-              Hello, world! This is a toast message.
-            </div>
-          </div>
+          <!-- 吐司訊息 -->
+          <message-toast ref="messageToast"></message-toast>
+          <!-- 吐司訊息 -->
          
           <table class="table align-middle">
             <thead>
@@ -190,7 +182,7 @@
               <textarea id="message" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
             </div>
             <div class="text-end">
-              <button type="submit" class="btn btn-danger"
+              <button type="submit" class="btn btn-danger" :class="{ 'disabled': Object.keys(errors).length !== 0 || !carts.length }"
                       >送出訂單</button>
             </div>
           </v-form>
@@ -235,6 +227,18 @@
   </div>
   </div>
   </div>
+  </script>
+
+  <script type="text/x-template" id="toastMsg">
+    <div ref="toast" class="toast ms-auto fixed-top bg-info text-white" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Shopping Basket</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body text-weight-blod">
+        <h5>{{ toast_message }}</h5>
+      </div>
+    </div>
   </script>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'

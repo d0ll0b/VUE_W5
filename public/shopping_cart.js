@@ -1,5 +1,6 @@
 // import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 import userProductModal from './userProductModal.js';
+import MessageToast from './MessageToast.js';
 
 // 定義 VeeValidate規則(全部載入)
 Object.keys(VeeValidateRules).forEach(rule => {
@@ -75,7 +76,7 @@ const app = Vue.createApp({
                 this.product = product;
                 this.$refs.userProductModal.show_Model();
             }).catch((err) => {
-                alert(err.data.message);
+                alert(err);
             }).finally(()=>{
                 this.isloading=false;
             })
@@ -101,9 +102,9 @@ const app = Vue.createApp({
 
             axios[http](api, { data: cart }).then((res) => {
                 this.get_cart();
-                alert(message);
+                this.toastMsg(message);
             }).catch((err) => {
-                alert(err.data.message);
+                alert(err);
             }).finally(()=>{
                 this.isloading=false;
                 this.$refs.userProductModal.hide_Model();
@@ -119,7 +120,7 @@ const app = Vue.createApp({
                 this.total = total;
                 this.final_total = final_total;
             }).catch((err) => {
-                alert(err.data.message);
+                alert(err);
             }).finally(()=>{
                 this.isloading=false;
             })
@@ -143,9 +144,9 @@ const app = Vue.createApp({
             if(result){
                 axios.delete(api).then((res) => {
                     this.get_cart();
-                    alert(message);
+                    this.toastMsg(message);
                 }).catch((err) => {
-                    alert(err.data.message);
+                    alert(err);
                 }).finally(()=>{
                     this.isloading=false;
                 })
@@ -159,25 +160,26 @@ const app = Vue.createApp({
                 this.get_cart();
                 this.$refs.form.resetForm();
                 this.form.message = '';
-                alert('訂單已成交，謝謝~~');
+                this.toastMsg('訂單已成交，謝謝~~');
             }).catch((err) => {
-                alert(err.data.message);
+                alert(err);
             }).finally(()=>{
                 this.isloading=false;
             })
+        },
+        toastMsg(message){
+            this.$refs.messageToast.show_toast(message)
         }
     },
     mounted(){
         this.get_products();
         this.get_cart();
-
-        var toast = new bootstrap.Toast(this.$refs.toast)
-        toast.show()
     },
 });
 
 app.component('loading', VueLoading.Component)
 app.component('userProductModal', userProductModal);
+app.component('MessageToast', MessageToast);
 app.component('VForm', VeeValidate.Form);
 app.component('VField', VeeValidate.Field);
 app.component('ErrorMessage', VeeValidate.ErrorMessage);
